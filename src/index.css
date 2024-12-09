@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e40af, #1e3a8a);
+  color: white;
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+
+/* Improve number input appearance */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Wave animations */
+@keyframes wave-slow {
+  0% { transform: translateX(-100%) }
+  50% { transform: translateX(0%) }
+  100% { transform: translateX(-100%) }
+}
+
+@keyframes wave-fast {
+  0% { transform: translateX(-50%) }
+  50% { transform: translateX(50%) }
+  100% { transform: translateX(-50%) }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.92); opacity: 0.8; }
+}
+
+/* Bubble animation */
+@keyframes bubble {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-100px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+.animate-wave-slow {
+  animation: wave-slow 8s linear infinite;
+}
+
+.animate-wave-fast {
+  animation: wave-fast 4s linear infinite;
+}
+
+.animate-pulse-subtle {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-bubble {
+  animation: bubble 6s ease-out infinite;
+}
+
+/* Input focus animations */
+@keyframes glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
