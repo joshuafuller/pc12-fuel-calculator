@@ -7,6 +7,7 @@ on:
     branches:
       - 'feature/*'
 
+# Cancel any previous runs for the same ref when a new run is started
 concurrency: ${{ github.ref }}
 
 jobs:
@@ -21,13 +22,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          # Removed the 'cache' lines completely
 
-      - name: Install Yarn 4 globally & enable Corepack
+      - name: Enable and install Yarn Berry
         run: |
-          npm install -g corepack yarn@4.6.0
           corepack enable
-          yarn --version  # Debug to confirm it’s 4.6.0
+          corepack prepare yarn@berry --activate
+          yarn --version
 
       - name: Install dependencies
         run: yarn install
@@ -50,13 +50,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          # Removed the 'cache' lines completely
 
-      - name: Install Yarn 4 globally & enable Corepack
+      - name: Enable and install Yarn Berry
         run: |
-          npm install -g corepack yarn@4.6.0
           corepack enable
-          yarn --version  # Debug to confirm it’s 4.6.0
+          corepack prepare yarn@berry --activate
+          yarn --version
 
       - name: Install dependencies
         run: yarn install
