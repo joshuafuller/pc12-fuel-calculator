@@ -1,15 +1,49 @@
 name: CI
 
 on:
+  pull_request:
+    branches: [ 'main' ]
   push:
     branches:
-      - "main"
-      - "feature/*"
-  pull_request:
-    branches:
-      - "main"
+      - 'feature/*'
+
+# Cancel any previous runs for the same ref when a new run is started
+concurrency: ${{ github.ref }}
 
 jobs:
+  # Lint job (Node 18 only)
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: Enable and install Yarn 2.4.3
+        run: |
+          corepack enable
+          corepack prepare yarn@2.4.3 --activate
+          yarn --version  # Debug check
+
+      - name: Cache Yarn
+        uses: actions/cache@v3
+        with:
+          path: .yarn/cache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Lint code
+        run: yarn lint
+
+  # Build and test across multiple Node versions
   build-test:
     runs-on: ubuntu-24.04
     strategy:
@@ -25,15 +59,22 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      # Ensure Corepack is enabled so Yarn is recognized
-      - name: Enable Corepack
-        run: corepack enable
+      - name: Enable and install Yarn 2.4.3
+        run: |
+          corepack enable
+          corepack prepare yarn@2.4.3 --activate
+          yarn --version  # Debug check
+
+      - name: Cache Yarn
+        uses: actions/cache@v3
+        with:
+          path: .yarn/cache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
       - name: Install dependencies
         run: yarn install
-
-      - name: Lint code
-        run: yarn lint
 
       - name: Build project
         run: yarn build
