@@ -26,6 +26,7 @@ Quickly determine how much fuel to add or remove for your PC-12. Adjust for ambi
 - Node.js (v14+)
 - npm or pnpm
 
+<!-- Test CI Workflow -->
 ### Installation
 
 ```bash
