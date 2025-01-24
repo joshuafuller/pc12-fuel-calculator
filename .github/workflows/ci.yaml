@@ -28,6 +28,10 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
+      # Explicitly prepare Yarn 4.6.0 per package.json
+      - name: Prepare Yarn
+        run: corepack prepare yarn@4.6.0 --activate
+
       - name: Install dependencies
         run: yarn install
 
@@ -54,6 +58,10 @@ jobs:
 
       - name: Enable Corepack
         run: corepack enable
+
+      # Again, explicitly prepare Yarn
+      - name: Prepare Yarn
+        run: corepack prepare yarn@4.6.0 --activate
 
       - name: Install dependencies
         run: yarn install
