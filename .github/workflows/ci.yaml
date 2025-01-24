@@ -23,11 +23,11 @@ jobs:
         with:
           node-version: 18.x
 
-      - name: Enable and install Yarn Berry
+      - name: Enable and install Yarn 2.4.3
         run: |
           corepack enable
-          corepack prepare yarn@berry --activate
-          yarn --version
+          corepack prepare yarn@2.4.3 --activate
+          yarn --version  # Debug check
 
       - name: Install dependencies
         run: yarn install
@@ -51,11 +51,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Enable and install Yarn Berry
+      - name: Enable and install Yarn 2.4.3
         run: |
           corepack enable
-          corepack prepare yarn@berry --activate
-          yarn --version
+          corepack prepare yarn@2.4.3 --activate
+          yarn --version  # Debug check
 
       - name: Install dependencies
         run: yarn install
