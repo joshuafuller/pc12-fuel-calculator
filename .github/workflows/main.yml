@@ -29,7 +29,9 @@ jobs:
 
     - name: Run tests
       run: npm test
+-
 - name: Report status
+      run: echo "Tests completed."
   uses: actions/github-script@v5
   with:
     script: |
