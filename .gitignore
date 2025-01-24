@@ -1,4 +1,32 @@
-# Logs
+# -----------------------------------------------------------------------------------
+#  Yarn (v2+ / Berry) - Traditional (Online) Install
+# -----------------------------------------------------------------------------------
+# We ignore these because we're not committing an offline cache or install-state info.
+.yarn/cache/
+.yarn/install-state.gz
+.yarn/unplugged/
+.yarn/build-state.yml
+
+# Keep .yarn/plugins/ and .yarn/releases/ if you need them pinned in the repo
+# If you don't need them, you can ignore them too:
+#.yarn/plugins/
+#.yarn/releases/
+
+# -----------------------------------------------------------------------------------
+#  Node & Build Outputs
+# -----------------------------------------------------------------------------------
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# If you have other build/artifact dirs, ignore them too:
+# build/
+# coverage/
+
+# -----------------------------------------------------------------------------------
+#  Logs
+# -----------------------------------------------------------------------------------
 logs
 *.log
 npm-debug.log*
@@ -7,15 +35,12 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
+# -----------------------------------------------------------------------------------
+#  Editor / OS / Misc. Files
+# -----------------------------------------------------------------------------------
 .vscode/*
-!.vscode/extensions.json
-.idea
+!.vscode/extensions.json   # Keep recommended extensions if you use them
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
@@ -23,4 +48,7 @@ dist-ssr
 *.sln
 *.sw?
 
+# -----------------------------------------------------------------------------------
+#  Project-Specific
+# -----------------------------------------------------------------------------------
 .bolt
