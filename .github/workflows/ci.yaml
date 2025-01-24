@@ -71,3 +71,4 @@ jobs:
 
       - name: Test project
         run: yarn test
+# Trigger new workflow run
