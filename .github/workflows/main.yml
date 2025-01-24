@@ -29,3 +29,21 @@ jobs:
 
     - name: Run tests
       run: npm test
+- name: Report status
+  uses: actions/github-script@v5
+  with:
+    script: |
+      const core = require('@actions/core');
+      const github = require('@actions/github');
+      const context = github.context;
+
+      const octokit = github.getOctokit(core.getInput('github-token'));
+      await octokit.rest.repos.createCommitStatus({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        sha: context.sha,
+        state: 'success',
+        context: 'CI Build',
+        description: 'CI build and tests passed',
+      });
+    github-token: ${{ secrets.GITHUB_TOKEN }}
