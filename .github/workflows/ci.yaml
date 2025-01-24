@@ -11,7 +11,7 @@ on:
 concurrency: ${{ github.ref }}
 
 jobs:
-  # Lint job runs on a single Node version (18.x here, but pick whichever you want)
+  # Lint job (Node 18 only)
   lint:
     runs-on: ubuntu-24.04
     steps:
@@ -29,6 +29,14 @@ jobs:
           corepack prepare yarn@2.4.3 --activate
           yarn --version  # Debug check
 
+      - name: Cache Yarn
+        uses: actions/cache@v3
+        with:
+          path: .yarn/cache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
       - name: Install dependencies
         run: yarn install
 
@@ -41,7 +49,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [ '18.x', '20.x', '23.x' ]
+        node-version: [ '18.x', '19.x', '20.x', '21.x', '22.x', '23.x' ]
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -56,6 +64,14 @@ jobs:
           corepack enable
           corepack prepare yarn@2.4.3 --activate
           yarn --version  # Debug check
+
+      - name: Cache Yarn
+        uses: actions/cache@v3
+        with:
+          path: .yarn/cache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
       - name: Install dependencies
         run: yarn install
