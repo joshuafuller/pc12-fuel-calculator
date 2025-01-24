@@ -1,7 +1,7 @@
-import { render } from '@testing-library/react';
-import { screen } from '@testing-library/dom';
+// eslint-disable-next-line no-unused-vars
+import React from 'react';
+import { render, screen } from '@testing-library/react';
 import App from '../App';
-
 
 test('renders a heading', () => {
   render(<App />);
