@@ -2,25 +2,29 @@ name: CI
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: [ 'main' ]
+  push:
+    branches:
+      - 'feature/*'
+
+# Cancel any previous runs for the same ref when a new run is started
+concurrency: ${{ github.ref }}
 
 jobs:
-  build-test:
+  # Lint job runs on a single Node version (18.x here, but pick whichever you want)
+  lint:
     runs-on: ubuntu-24.04
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [ '18.x', '19.x', '20.x', '21.x', '22.x', '23.x' ]
     steps:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.x
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
 
-      # Ensure Corepack is enabled so Yarn is recognized
       - name: Enable Corepack
         run: corepack enable
 
@@ -29,6 +33,30 @@ jobs:
 
       - name: Lint code
         run: yarn lint
+
+  # Build and test across multiple Node versions
+  build-test:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [ '18.x', '20.x', '23.x' ]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install
 
       - name: Build project
         run: yarn build
