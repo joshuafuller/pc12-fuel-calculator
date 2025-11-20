@@ -1,5 +1,9 @@
 # PC-12 Fuel Calculator
 
+[![Deploy to GitHub Pages](https://github.com/joshuafuller/pc12-fuel-calculator/actions/workflows/deploy.yml/badge.svg)](https://github.com/joshuafuller/pc12-fuel-calculator/actions/workflows/deploy.yml)
+
+**🔗 Live App: [https://joshuafuller.github.io/pc12-fuel-calculator/](https://joshuafuller.github.io/pc12-fuel-calculator/)**
+
 Quickly determine how much fuel to add or remove for your PC-12. Adjust for ambient temperature, switch between units, use presets, and more—all in a sleek, modern interface.
 
 ## Features
@@ -30,7 +34,7 @@ Quickly determine how much fuel to add or remove for your PC-12. Adjust for ambi
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/pc12-fuel-calculator.git
+git clone https://github.com/joshuafuller/pc12-fuel-calculator.git
 cd pc12-fuel-calculator
 
 # Enable Corepack for Yarn
@@ -46,7 +50,7 @@ yarn install --frozen-lockfile
 yarn dev
 ```
 
-Access the app at [http://localhost:5173](http://localhost:5173). Changes appear instantly as you code.
+Access the app at [http://localhost:5173/pc12-fuel-calculator/](http://localhost:5173/pc12-fuel-calculator/). Changes appear instantly as you code.
 
 ### Build & Preview
 
@@ -68,7 +72,11 @@ Pre-check your production build locally before deploying.
 
 ## Deployment to GitHub Pages
 
-The repository includes a GitHub Actions workflow that builds the app and deploys the static files to GitHub Pages.
+The repository includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) that automatically builds and deploys the app to GitHub Pages.
+
+**The app is currently deployed at:** [https://joshuafuller.github.io/pc12-fuel-calculator/](https://joshuafuller.github.io/pc12-fuel-calculator/)
+
+### Setting up GitHub Pages for your fork:
 
 1. Enable GitHub Pages in your repository settings, selecting **GitHub Actions** as the source.
 2. Ensure the `VITE_BASE_PATH` matches your Pages site (defaults to `/pc12-fuel-calculator/`). You can override it in the Actions workflow `env` block if you use a custom path or a user/organization site.
