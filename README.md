@@ -23,8 +23,8 @@ Quickly determine how much fuel to add or remove for your PC-12. Adjust for ambi
 
 ### Requirements
 
-- Node.js (v14+)
-- npm or pnpm
+- Node.js (v18+)
+- [Corepack](https://nodejs.org/api/corepack.html) enabled (bundled with Node 18+) to use the pinned Yarn version
 
 ### Installation
 
@@ -33,16 +33,17 @@ Quickly determine how much fuel to add or remove for your PC-12. Adjust for ambi
 git clone https://github.com/yourusername/pc12-fuel-calculator.git
 cd pc12-fuel-calculator
 
-# Install dependencies
-pnpm install
-```
+# Enable Corepack for Yarn
+corepack enable
 
-*(Using npm? Run `npm install` instead.)*
+# Install dependencies
+yarn install --frozen-lockfile
+```
 
 ### Development
 
 ```bash
-pnpm run dev
+yarn dev
 ```
 
 Access the app at [http://localhost:5173](http://localhost:5173). Changes appear instantly as you code.
@@ -50,8 +51,8 @@ Access the app at [http://localhost:5173](http://localhost:5173). Changes appear
 ### Build & Preview
 
 ```bash
-pnpm run build
-pnpm run preview
+yarn build
+yarn preview
 ```
 
 Pre-check your production build locally before deploying.
@@ -64,6 +65,14 @@ Pre-check your production build locally before deploying.
 - `src/utils/`: Utility functions for calculations, conversions, and storage.
 - `tailwind.config.js`: Tailwind configuration.
 - `vite.config.ts`: Vite and PWA setup.
+
+## Deployment to GitHub Pages
+
+The repository includes a GitHub Actions workflow that builds the app and deploys the static files to GitHub Pages.
+
+1. Enable GitHub Pages in your repository settings, selecting **GitHub Actions** as the source.
+2. Ensure the `VITE_BASE_PATH` matches your Pages site (defaults to `/pc12-fuel-calculator/`). You can override it in the Actions workflow `env` block if you use a custom path or a user/organization site.
+3. Push to the `main` branch (or trigger the workflow manually). The workflow will build the Vite site, upload the `dist` artifact, and publish it to Pages.
 
 ## Contributing
 
