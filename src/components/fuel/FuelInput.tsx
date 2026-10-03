@@ -48,7 +48,7 @@ export function FuelInput({
         step="10"
         icon={<Fuel className="w-3 h-3" />}
         unit={`lbs (${volume.toFixed(1)} ${unit})`}
-        width="w-56"
+        width="w-full"
         warningThreshold={maxFuelLoad * 0.9}
         allowEmpty={false}
       />

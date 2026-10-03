@@ -26,7 +26,7 @@ export function Header({ isDark, onThemeToggle, onSettingsClick }: HeaderProps) 
                 : 'text-blue-600'
             }`} />
           </div>
-          <h1 className={`text-lg sm:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r ${
+          <h1 className={`text-base sm:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r ${
             isDark 
               ? 'from-blue-400 to-purple-400' 
               : 'from-blue-600 to-purple-600'

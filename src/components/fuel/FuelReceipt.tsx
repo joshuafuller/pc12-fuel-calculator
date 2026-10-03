@@ -67,16 +67,16 @@ export function FuelReceipt({
         ? 'bg-black/40 backdrop-blur-md border-white/10 ring-1 ring-blue-500/20' 
         : 'bg-white/90 backdrop-blur-md border-black/5'
     }`}>
-      <div className={`p-4 font-mono text-sm leading-tight ${
+      <div className={`p-3 sm:p-4 font-mono text-xs sm:text-sm leading-tight ${
         isDark ? 'text-white' : 'text-gray-900'
       }`}>
         <div className="max-w-[400px] mx-auto">
-          <table className="w-full border-separate border-spacing-0 whitespace-pre">
+          <table className="w-full border-separate border-spacing-0 whitespace-nowrap">
             <tbody>
-              <tr><td colSpan={3} className="text-center pb-2">{'═'.repeat(38)}</td></tr>
+              <tr><td colSpan={3} className="py-1"><div className="border-t-4 border-double border-current" /></td></tr>
               <tr><td colSpan={3} className="text-center font-bold">PC-12 FUEL CALCULATION RECEIPT</td></tr>
               <tr><td colSpan={3} className="text-center pb-1">{timestamp}</td></tr>
-              <tr><td colSpan={3} className="text-center pb-2">{'═'.repeat(38)}</td></tr>
+              <tr><td colSpan={3} className="py-1"><div className="border-t-4 border-double border-current" /></td></tr>
               
               {/* Conditions Section */}
               <tr><td colSpan={3}>CONDITIONS:</td></tr>
@@ -91,7 +91,7 @@ export function FuelReceipt({
                 <td className="pl-2">LBS/GAL {densityChanged ? '(!NON-STD!)' : ''}</td>
               </tr>
               
-              <tr><td colSpan={3} className="py-2">{'─'.repeat(38)}</td></tr>
+              <tr><td colSpan={3} className="py-1"><div className="border-t border-current" /></td></tr>
               
               {/* Current Fuel Section */}
               <tr>
@@ -117,7 +117,7 @@ export function FuelReceipt({
                 <td className="pl-2">{volumeUnit}</td>
               </tr>
               
-              <tr><td colSpan={3} className="py-2">{'─'.repeat(38)}</td></tr>
+              <tr><td colSpan={3} className="py-1"><div className="border-t border-current" /></td></tr>
               
               {/* Calculation Section */}
               <tr><td colSpan={3}>CALCULATION:</td></tr>
@@ -137,7 +137,7 @@ export function FuelReceipt({
                 <td className="pl-2">LBS DIFFERENCE</td>
               </tr>
               
-              <tr><td colSpan={3} className="py-2">{'═'.repeat(38)}</td></tr>
+              <tr><td colSpan={3} className="py-1"><div className="border-t-4 border-double border-current" /></td></tr>
               
               {/* Required Action Section */}
               <tr><td colSpan={3} className="font-bold">REQUIRED ACTION:</td></tr>
@@ -153,7 +153,7 @@ export function FuelReceipt({
               </tr>
 
               {/* Per Wing Section */}
-              <tr><td colSpan={3} className="py-2">{'─'.repeat(38)}</td></tr>
+              <tr><td colSpan={3} className="py-1"><div className="border-t border-current" /></td></tr>
               <tr><td colSpan={3} className="font-bold">PER WING:</td></tr>
               <tr>
                 <td>{fuelDifference > 0 ? 'ADD' : 'REMOVE'}</td>

@@ -20,10 +20,10 @@ export default function App() {
     <div className={`min-h-screen transition-colors duration-300 ${
       isDark ? 'bg-gray-900' : 'bg-gray-100'
     }`}>
-      <div className="max-w-3xl mx-auto px-3 py-4 sm:px-4">
+      <div className="max-w-3xl land:max-w-5xl mx-auto px-3 py-4 land:py-2 sm:px-4 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] pb-[max(1rem,env(safe-area-inset-bottom))]">
         <div className="flex gap-3 sm:gap-4">
           {/* Fuel Meter - Left Side */}
-          <div className="w-16 sm:w-20 flex-shrink-0">
+          <div className="w-16 sm:w-20 flex-shrink-0 sticky top-4 land:top-2 self-start h-[calc(100vh-2rem)] h-[calc(100dvh-2rem)] land:h-[calc(100dvh-1rem)] min-h-[320px]">
             <FuelMeter 
               currentFuel={fuel.currentFuel}
               desiredFuel={fuel.desiredFuel}
@@ -34,7 +34,7 @@ export default function App() {
           </div>
 
           {/* Main Content - Right Side */}
-          <div className="flex-1 min-w-0 space-y-4">
+          <div className="flex-1 min-w-0 space-y-4 land:space-y-0 land:grid land:grid-cols-2 land:gap-3 land:items-start">
             <div className={`rounded-xl overflow-hidden shadow-xl border transition-colors duration-300 ${
               isDark 
                 ? 'bg-black/40 backdrop-blur-md border-white/10 ring-1 ring-blue-500/20' 
