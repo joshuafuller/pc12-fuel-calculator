@@ -41,7 +41,7 @@ cd pc12-fuel-calculator
 corepack enable
 
 # Install dependencies
-yarn install --frozen-lockfile
+yarn install --immutable
 ```
 
 ### Development

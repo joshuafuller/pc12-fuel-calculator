@@ -31,9 +31,12 @@ function NumberField({ label, value, defaultValue, min, max, step, onCommit }: N
   const id = useId();
   const [text, setText] = useState(String(value));
 
-  useEffect(() => {
-    setText(prev => (parseFloat(prev) === value ? prev : String(value)));
-  }, [value]);
+  // Re-sync the text when the value changes from outside (e.g. the reset button).
+  const [prevValue, setPrevValue] = useState(value);
+  if (value !== prevValue) {
+    setPrevValue(value);
+    if (parseFloat(text) !== value) setText(String(value));
+  }
 
   const parsed = text.trim() === '' ? NaN : Number(text);
   const isValid = Number.isFinite(parsed) && parsed >= min && parsed <= max;

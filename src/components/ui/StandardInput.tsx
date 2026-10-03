@@ -1,4 +1,4 @@
-import { useId, useRef, useState, useEffect, MouseEvent, ReactNode } from 'react';
+import { useId, useRef, useState, MouseEvent, ReactNode } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 import { AlertCircle } from 'lucide-react';
 import { Particles } from '../effects/Particles';
@@ -45,10 +45,13 @@ export function StandardInput({
   const [warning, setWarning] = useState<string | null>(null);
   const inputRef = useRef<HTMLDivElement>(null);
   
-  // Update internal input value when external value changes
-  useEffect(() => {
-    setInputValue(prev => (value === parseFloat(prev) ? prev : value.toString()));
-  }, [value]);
+  // Re-sync the text when the value changes from outside (e.g. preset or unit switch),
+  // but keep what the user is typing if it already parses to the same number.
+  const [prevValue, setPrevValue] = useState(value);
+  if (value !== prevValue) {
+    setPrevValue(value);
+    if (value !== parseFloat(inputValue)) setInputValue(value.toString());
+  }
 
   const handleClick = (e: MouseEvent<HTMLDivElement>) => {
     if (!inputRef.current) return;

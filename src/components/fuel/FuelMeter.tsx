@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { poundsToVolume } from '../../utils/constants';
 import { UnitSystem } from '../../types/fuel';
 import { useTheme } from '../../context/ThemeContext';
@@ -28,15 +28,13 @@ export function FuelMeter({ currentFuel, desiredFuel, density, unitSystem, maxFu
   );
 
   // Randomised once, so bubbles don't jump around every time a value changes.
-  const bubbles = useMemo(
-    () =>
-      Array.from({ length: BUBBLE_COUNT }, () => ({
-        left: Math.random() * 100,
-        bottom: Math.random() * 100,
-        delay: Math.random() * 5,
-        duration: 4 + Math.random() * 4
-      })),
-    []
+  const [bubbles] = useState(() =>
+    Array.from({ length: BUBBLE_COUNT }, () => ({
+      left: Math.random() * 100,
+      bottom: Math.random() * 100,
+      delay: Math.random() * 5,
+      duration: 4 + Math.random() * 4
+    }))
   );
 
   const shouldShiftDown = (height: number) => height > LABEL_SHIFT_THRESHOLD;

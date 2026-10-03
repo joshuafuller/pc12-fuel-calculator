@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { FuelState, UnitSystem } from '../types/fuel';
 import { Settings } from '../types/settings';
 import { saveFuelState, loadFuelState } from '../utils/storage';
@@ -34,32 +34,23 @@ export function useFuelState(settings: Settings) {
   const { defaultDensity, maxFuelLoad, persistSettings } = settings;
   const [state, setState] = useState<FuelState>(() => initialState(settings));
 
-  // A new default density invalidates the temperature-adjusted density; the initial
-  // render keeps whatever density was restored from storage.
-  const isFirstRender = useRef(true);
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
+  // Settings changes adjust the state during render (React's pattern for deriving state
+  // from props) rather than in an effect, which would paint one stale frame first.
+  const [prevSettings, setPrevSettings] = useState({ defaultDensity, maxFuelLoad });
+  if (prevSettings.defaultDensity !== defaultDensity || prevSettings.maxFuelLoad !== maxFuelLoad) {
+    setPrevSettings({ defaultDensity, maxFuelLoad });
     setState(prev => ({
       ...prev,
-      density: adjustDensityForTemperature(defaultDensity, prev.temperature, prev.unitSystem === 'metric')
+      // A new default density invalidates the temperature-adjusted density.
+      density:
+        prevSettings.defaultDensity !== defaultDensity
+          ? adjustDensityForTemperature(defaultDensity, prev.temperature, prev.unitSystem === 'metric')
+          : prev.density,
+      // Lowering the maximum must not leave fuel above it.
+      currentFuel: clampFuel(prev.currentFuel, maxFuelLoad),
+      desiredFuel: clampFuel(prev.desiredFuel, maxFuelLoad)
     }));
-  }, [defaultDensity]);
-
-  // Lowering the maximum fuel load must not leave fuel above the new maximum.
-  useEffect(() => {
-    setState(prev =>
-      prev.currentFuel > maxFuelLoad || prev.desiredFuel > maxFuelLoad
-        ? {
-            ...prev,
-            currentFuel: clampFuel(prev.currentFuel, maxFuelLoad),
-            desiredFuel: clampFuel(prev.desiredFuel, maxFuelLoad)
-          }
-        : prev
-    );
-  }, [maxFuelLoad]);
+  }
 
   useEffect(() => {
     if (persistSettings) saveFuelState(state);

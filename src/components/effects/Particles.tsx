@@ -46,7 +46,9 @@ export function Particles({
   const lastRipplePointRef = useRef<{ x: number; y: number } | undefined>();
   // Read inside the animation loop so a new click doesn't tear down and rebuild the effect.
   const ripplePointRef = useRef(ripplePoint);
-  ripplePointRef.current = ripplePoint;
+  useEffect(() => {
+    ripplePointRef.current = ripplePoint;
+  }, [ripplePoint]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
