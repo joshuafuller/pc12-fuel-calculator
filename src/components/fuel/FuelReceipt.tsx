@@ -1,7 +1,7 @@
-import React from 'react';
-import { poundsToGallons, gallonsToLiters } from '../../utils/constants';
+import { DEFAULT_FUEL_DENSITY, poundsToVolume } from '../../utils/constants';
 import { UnitSystem } from '../../types/fuel';
-import { fahrenheitToCelsius } from '../../utils/temperature';
+import { useTheme } from '../../context/ThemeContext';
+import { fahrenheitToCelsius, isNonStandardTemperature, STANDARD_TEMPERATURE_F } from '../../utils/temperature';
 
 interface FuelReceiptProps {
   currentFuel: number;
@@ -11,19 +11,20 @@ interface FuelReceiptProps {
   defaultTemperature: number;
   densityChanged: boolean;
   unitSystem: UnitSystem;
-  isDark: boolean;
 }
 
-export function FuelReceipt({ 
-  currentFuel = 0, 
-  desiredFuel = 0, 
-  density = 6.7, 
+const formatNumber = (num: number): string => num.toFixed(1);
+
+export function FuelReceipt({
+  currentFuel = 0,
+  desiredFuel = 0,
+  density = DEFAULT_FUEL_DENSITY,
   densityChanged,
   unitSystem,
-  isDark,
-  temperature = 59,
-  defaultTemperature = 59
+  temperature = STANDARD_TEMPERATURE_F,
+  defaultTemperature = STANDARD_TEMPERATURE_F
 }: FuelReceiptProps) {
+  const { isDark } = useTheme();
   const fuelDifference = desiredFuel - currentFuel;
   const timestamp = new Date().toLocaleString('en-US', {
     year: 'numeric',
@@ -34,32 +35,22 @@ export function FuelReceipt({
     hour12: false
   });
 
-  const formatNumber = (num: number | null | undefined): string => {
-    if (num === null || num === undefined) return '0.0';
-    return num.toFixed(1);
-  };
-  
-  const currentGallons = poundsToGallons(currentFuel, density);
-  const desiredGallons = poundsToGallons(desiredFuel, density);
-  const diffGallons = Math.abs(poundsToGallons(fuelDifference, density));
+  const isMetric = unitSystem === 'metric';
+  const currentVolume = poundsToVolume(currentFuel, density, unitSystem);
+  const desiredVolume = poundsToVolume(desiredFuel, density, unitSystem);
+  const diffVolume = Math.abs(poundsToVolume(fuelDifference, density, unitSystem));
+  const volumeUnit = isMetric ? 'L' : 'GAL';
 
-  const currentVolume = unitSystem === 'metric' ? gallonsToLiters(currentGallons) : currentGallons;
-  const desiredVolume = unitSystem === 'metric' ? gallonsToLiters(desiredGallons) : desiredGallons;
-  const diffVolume = unitSystem === 'metric' ? gallonsToLiters(diffGallons) : diffGallons;
-  const volumeUnit = unitSystem === 'metric' ? 'L' : 'GAL';
-
-  // Calculate per-wing values
+  // Per-wing values
   const diffPoundsPerWing = Math.abs(fuelDifference) / 2;
   const diffVolumePerWing = diffVolume / 2;
 
-  // Temperature display
-  const displayTemp = unitSystem === 'metric'
-    ? `${formatNumber(fahrenheitToCelsius(temperature))}°C`
-    : `${formatNumber(temperature)}°F`;
-  const standardTemp = unitSystem === 'metric'
-    ? `${formatNumber(fahrenheitToCelsius(defaultTemperature))}°C`
-    : `${formatNumber(defaultTemperature)}°F`;
-  const tempChanged = temperature !== defaultTemperature;
+  // `temperature` is in the active unit system; the default is always °F.
+  const tempUnit = isMetric ? '°C' : '°F';
+  const displayTemp = `${formatNumber(temperature)}${tempUnit}`;
+  const standardTemp = `${formatNumber(isMetric ? fahrenheitToCelsius(defaultTemperature) : defaultTemperature)}${tempUnit}`;
+  const tempChanged = isNonStandardTemperature(temperature, defaultTemperature, isMetric);
+  const action = fuelDifference > 0 ? 'ADD' : fuelDifference < 0 ? 'REMOVE' : 'NO CHANGE';
 
   return (
     <div className={`rounded-xl overflow-hidden border shadow-xl transition-colors duration-300 ${
@@ -142,7 +133,7 @@ export function FuelReceipt({
               {/* Required Action Section */}
               <tr><td colSpan={3} className="font-bold">REQUIRED ACTION:</td></tr>
               <tr>
-                <td>{fuelDifference > 0 ? 'ADD' : 'REMOVE'}</td>
+                <td>{action}</td>
                 <td className="text-right">{formatNumber(Math.abs(fuelDifference))}</td>
                 <td className="pl-2">LBS TOTAL</td>
               </tr>
@@ -156,7 +147,7 @@ export function FuelReceipt({
               <tr><td colSpan={3} className="py-1"><div className="border-t border-current" /></td></tr>
               <tr><td colSpan={3} className="font-bold">PER WING:</td></tr>
               <tr>
-                <td>{fuelDifference > 0 ? 'ADD' : 'REMOVE'}</td>
+                <td>{action}</td>
                 <td className="text-right">{formatNumber(diffPoundsPerWing)}</td>
                 <td className="pl-2">LBS/WING</td>
               </tr>

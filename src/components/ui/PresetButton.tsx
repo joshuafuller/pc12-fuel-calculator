@@ -1,13 +1,13 @@
-import React from 'react';
 import { Sparkles } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
 
 interface PresetButtonProps {
   onClick: () => void;
-  isDark: boolean;
   presetValue: number;
 }
 
-export function PresetButton({ onClick, isDark, presetValue }: PresetButtonProps) {
+export function PresetButton({ onClick, presetValue }: PresetButtonProps) {
+  const { isDark } = useTheme();
   return (
     <button
       onClick={onClick}

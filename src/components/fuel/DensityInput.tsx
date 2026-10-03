@@ -1,18 +1,14 @@
-import React from 'react';
 import { Thermometer, Droplet } from 'lucide-react';
-import { adjustDensityForTemperature, fahrenheitToCelsius } from '../../utils/temperature';
+import { adjustDensityForTemperature, fahrenheitToCelsius, isNonStandardTemperature } from '../../utils/temperature';
 import { UnitSystem } from '../../types/fuel';
 import { StandardInput } from '../ui/StandardInput';
+import { useTheme } from '../../context/ThemeContext';
 
 interface DensityInputProps {
   value: number;
   temperature: number;
   onChange: (value: number) => void;
   onTemperatureChange: (value: number) => void;
-  isDark: boolean;
-  isFocused: boolean;
-  onFocus: () => void;
-  onBlur: () => void;
   defaultDensity: number;
   defaultTemperature: number;
   unitSystem: UnitSystem;
@@ -23,10 +19,6 @@ export function DensityInput({
   temperature,
   onChange, 
   onTemperatureChange,
-  isDark, 
-  isFocused,
-  onFocus,
-  onBlur,
   defaultDensity,
   defaultTemperature,
   unitSystem
@@ -46,7 +38,11 @@ export function DensityInput({
     ? Math.round(fahrenheitToCelsius(defaultTemperature))
     : defaultTemperature;
 
-  const isNonStandard = value !== adjustedDefaultDensity || temperature !== defaultTemperature;
+  const isNonStandard =
+    value !== adjustedDefaultDensity ||
+    isNonStandardTemperature(temperature, defaultTemperature, unitSystem === 'metric');
+
+  const { isDark } = useTheme();
 
   const handleReset = () => {
     onChange(defaultDensity);
@@ -60,10 +56,6 @@ export function DensityInput({
           label="Fuel Density"
           value={value}
           onChange={onChange}
-          isDark={isDark}
-          isFocused={isFocused}
-          onFocus={onFocus}
-          onBlur={onBlur}
           min={5}
           max={8}
           step="0.1"
@@ -79,10 +71,6 @@ export function DensityInput({
           label="Temperature"
           value={temperature}
           onChange={onTemperatureChange}
-          isDark={isDark}
-          isFocused={isFocused}
-          onFocus={onFocus}
-          onBlur={onBlur}
           min={tempLimits.min}
           max={tempLimits.max}
           step="1"
@@ -106,6 +94,7 @@ export function DensityInput({
               isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-500'
             }`}
             title="Reset to standard values"
+            aria-label="Reset to standard values"
           >
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />

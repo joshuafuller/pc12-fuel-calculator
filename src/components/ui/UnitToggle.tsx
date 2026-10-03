@@ -1,14 +1,14 @@
-import React from 'react';
 import { Scale } from 'lucide-react';
 import { UnitSystem } from '../../types/fuel';
+import { useTheme } from '../../context/ThemeContext';
 
 interface UnitToggleProps {
   unitSystem: UnitSystem;
   onChange: (system: UnitSystem) => void;
-  isDark: boolean;
 }
 
-export function UnitToggle({ unitSystem, onChange, isDark }: UnitToggleProps) {
+export function UnitToggle({ unitSystem, onChange }: UnitToggleProps) {
+  const { isDark } = useTheme();
   return (
     <div className="flex items-center gap-2 mb-3">
       <Scale className={`w-3 h-3 ${isDark ? 'text-white/60' : 'text-gray-500'}`} />

@@ -1,6 +1,5 @@
-import React from 'react';
 import { Fuel } from 'lucide-react';
-import { poundsToGallons, gallonsToLiters } from '../../utils/constants';
+import { poundsToVolume } from '../../utils/constants';
 import { UnitSystem } from '../../types/fuel';
 import { StandardInput } from '../ui/StandardInput';
 
@@ -10,27 +9,11 @@ interface FuelInputProps {
   onChange: (value: number) => void;
   density: number;
   unitSystem: UnitSystem;
-  isDark: boolean;
-  isFocused: boolean;
-  onFocus: () => void;
-  onBlur: () => void;
   maxFuelLoad: number;
 }
 
-export function FuelInput({ 
-  label, 
-  value, 
-  onChange, 
-  density, 
-  unitSystem,
-  isDark,
-  isFocused,
-  onFocus,
-  onBlur,
-  maxFuelLoad
-}: FuelInputProps) {
-  const gallons = poundsToGallons(value, density);
-  const volume = unitSystem === 'metric' ? gallonsToLiters(gallons) : gallons;
+export function FuelInput({ label, value, onChange, density, unitSystem, maxFuelLoad }: FuelInputProps) {
+  const volume = poundsToVolume(value, density, unitSystem);
   const unit = unitSystem === 'metric' ? 'L' : 'gal';
 
   return (
@@ -39,10 +22,6 @@ export function FuelInput({
         label={label}
         value={value}
         onChange={onChange}
-        isDark={isDark}
-        isFocused={isFocused}
-        onFocus={onFocus}
-        onBlur={onBlur}
         min={0}
         max={maxFuelLoad}
         step="10"

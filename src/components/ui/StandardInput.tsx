@@ -1,4 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useId, useRef, useState, MouseEvent, ReactNode } from 'react';
+import { useTheme } from '../../context/ThemeContext';
 import { AlertCircle } from 'lucide-react';
 import { Particles } from '../effects/Particles';
 
@@ -6,14 +7,10 @@ interface StandardInputProps {
   label: string;
   value: number;
   onChange: (value: number) => void;
-  isDark: boolean;
-  isFocused: boolean;
-  onFocus: () => void;
-  onBlur: () => void;
   min?: number;
   max?: number;
   step?: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   unit?: string;
   standardValue?: number;
   onReset?: () => void;
@@ -27,10 +24,6 @@ export function StandardInput({
   label,
   value,
   onChange,
-  isDark,
-  isFocused,
-  onFocus,
-  onBlur,
   min,
   max,
   step = "1",
@@ -43,20 +36,24 @@ export function StandardInput({
   warningThreshold,
   allowEmpty = true
 }: StandardInputProps) {
+  const { isDark } = useTheme();
+  const inputId = useId();
+  const [isFocused, setIsFocused] = useState(false);
   const [ripplePoint, setRipplePoint] = useState<{ x: number; y: number } | undefined>();
   const [inputValue, setInputValue] = useState<string>(value.toString());
   const [error, setError] = useState<string | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
   const inputRef = useRef<HTMLDivElement>(null);
   
-  // Update internal input value when external value changes
-  useEffect(() => {
-    if (value !== parseFloat(inputValue)) {
-      setInputValue(value.toString());
-    }
-  }, [value]);
+  // Re-sync the text when the value changes from outside (e.g. preset or unit switch),
+  // but keep what the user is typing if it already parses to the same number.
+  const [prevValue, setPrevValue] = useState(value);
+  if (value !== prevValue) {
+    setPrevValue(value);
+    if (value !== parseFloat(inputValue)) setInputValue(value.toString());
+  }
 
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleClick = (e: MouseEvent<HTMLDivElement>) => {
     if (!inputRef.current) return;
     const rect = inputRef.current.getBoundingClientRect();
     setRipplePoint({
@@ -119,7 +116,7 @@ export function StandardInput({
 
   return (
     <div className="relative min-w-0 w-full">
-      <label className={`block text-xs font-medium mb-1.5 ${
+      <label htmlFor={inputId} className={`block text-xs font-medium mb-1.5 ${
         isDark ? 'text-white' : 'text-gray-700'
       }`}>
         <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0">
@@ -151,17 +148,18 @@ export function StandardInput({
             </>
           )}
           <input
+            id={inputId}
             type="text"
             inputMode="decimal"
             value={inputValue}
             onChange={(e) => validateAndUpdate(e.target.value)}
-            onFocus={onFocus}
+            onFocus={() => setIsFocused(true)}
             onBlur={(e) => {
               // On blur, if empty and not allowing empty, reset to 0
               if (e.target.value === '' && !allowEmpty) {
                 validateAndUpdate('0');
               }
-              onBlur();
+              setIsFocused(false);
             }}
             step={step}
             className={`${width} px-3 py-1.5 border rounded text-sm

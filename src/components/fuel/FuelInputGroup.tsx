@@ -1,4 +1,3 @@
-import React from 'react';
 import { FuelInput } from './FuelInput';
 import { PresetButton } from '../ui/PresetButton';
 import { UnitSystem } from '../../types/fuel';
@@ -8,15 +7,8 @@ interface FuelInputGroupProps {
   desiredFuel: number;
   density: number;
   unitSystem: UnitSystem;
-  isDark: boolean;
-  currentFocused: boolean;
-  desiredFocused: boolean;
   onCurrentFuelChange: (value: number) => void;
   onDesiredFuelChange: (value: number) => void;
-  onCurrentFocus: () => void;
-  onCurrentBlur: () => void;
-  onDesiredFocus: () => void;
-  onDesiredBlur: () => void;
   maxFuelLoad: number;
   defaultPresetLoad: number;
 }
@@ -26,15 +18,8 @@ export function FuelInputGroup({
   desiredFuel,
   density,
   unitSystem,
-  isDark,
-  currentFocused,
-  desiredFocused,
   onCurrentFuelChange,
   onDesiredFuelChange,
-  onCurrentFocus,
-  onCurrentBlur,
-  onDesiredFocus,
-  onDesiredBlur,
   maxFuelLoad,
   defaultPresetLoad
 }: FuelInputGroupProps) {
@@ -46,13 +31,9 @@ export function FuelInputGroup({
         onChange={onCurrentFuelChange}
         density={density}
         unitSystem={unitSystem}
-        isDark={isDark}
-        isFocused={currentFocused}
-        onFocus={onCurrentFocus}
-        onBlur={onCurrentBlur}
         maxFuelLoad={maxFuelLoad}
       />
-      
+
       <div className="flex flex-wrap xs:flex-nowrap items-start gap-2 min-w-0">
         <FuelInput
           label="Desired Fuel Load"
@@ -60,16 +41,11 @@ export function FuelInputGroup({
           onChange={onDesiredFuelChange}
           density={density}
           unitSystem={unitSystem}
-          isDark={isDark}
-          isFocused={desiredFocused}
-          onFocus={onDesiredFocus}
-          onBlur={onDesiredBlur}
           maxFuelLoad={maxFuelLoad}
         />
         <div className="xs:mt-5 flex-shrink-0">
-          <PresetButton 
-            onClick={() => onDesiredFuelChange(defaultPresetLoad)} 
-            isDark={isDark}
+          <PresetButton
+            onClick={() => onDesiredFuelChange(defaultPresetLoad)}
             presetValue={defaultPresetLoad}
           />
         </div>
