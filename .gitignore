@@ -54,3 +54,6 @@ lerna-debug.log*
 .bolt
 package-lock.json
 coverage/
+
+# TypeScript incremental build info
+*.tsbuildinfo

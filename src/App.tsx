@@ -1,82 +1,63 @@
-import React, { useState } from 'react';
-import { Header } from './components/layout/Header';
 import { FuelMeter } from './components/fuel/FuelMeter';
+import { Header } from './components/layout/Header';
 import { FuelInputGroup } from './components/fuel/FuelInputGroup';
 import { DensityInput } from './components/fuel/DensityInput';
 import { UnitToggle } from './components/ui/UnitToggle';
 import { FuelReceipt } from './components/fuel/FuelReceipt';
 import { SettingsDialog } from './components/ui/SettingsDialog';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { useFuelState } from './hooks/useFuelState';
-import { useFocusState } from './hooks/useFocusState';
 import { useSettings } from './hooks/useSettings';
 
-export default function App() {
-  const [isDark, setIsDark] = useState(true);
-  const settings = useSettings();
-  const fuel = useFuelState(settings.settings);
-  const focus = useFocusState();
-  
+function FuelCalculator() {
+  const { isDark } = useTheme();
+  const { settings, isDialogOpen, openDialog, closeDialog, updateSettings } = useSettings();
+  const fuel = useFuelState(settings);
+
   return (
     <div
-      className={`min-h-screen transition-colors duration-300 ${
-        isDark ? 'bg-gray-900' : 'bg-gray-100'
-      }`}
+      className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-gray-900' : 'bg-gray-100'}`}
       style={{
         paddingLeft: 'env(safe-area-inset-left)',
         paddingRight: 'env(safe-area-inset-right)',
-        paddingBottom: 'env(safe-area-inset-bottom)',
+        paddingBottom: 'env(safe-area-inset-bottom)'
       }}
     >
       <div className="max-w-3xl land:max-w-5xl mx-auto px-3 py-4 land:py-2 sm:px-4">
         <div className="flex gap-3 sm:gap-4">
-          {/* Fuel Meter - Left Side */}
+          {/* Fuel meter - left side */}
           <div className="w-12 xs:w-16 sm:w-20 flex-shrink-0 sticky top-4 land:top-2 self-start h-[calc(100vh-2rem)] h-[calc(100dvh-2rem)] land:h-[calc(100dvh-1rem)] min-h-[320px]">
-            <FuelMeter 
+            <FuelMeter
               currentFuel={fuel.currentFuel}
               desiredFuel={fuel.desiredFuel}
+              density={fuel.density}
               unitSystem={fuel.unitSystem}
-              isDark={isDark}
-              maxFuelLoad={settings.settings.maxFuelLoad}
+              maxFuelLoad={settings.maxFuelLoad}
             />
           </div>
 
-          {/* Main Content - Right Side */}
+          {/* Main content - right side */}
           <div className="flex-1 min-w-0 space-y-4 land:space-y-0 land:grid land:grid-cols-2 land:gap-3 land:items-start">
             <div className={`rounded-xl overflow-hidden shadow-xl border transition-colors duration-300 ${
-              isDark 
-                ? 'bg-black/40 backdrop-blur-md border-white/10 ring-1 ring-blue-500/20' 
+              isDark
+                ? 'bg-black/40 backdrop-blur-md border-white/10 ring-1 ring-blue-500/20'
                 : 'bg-white/90 backdrop-blur-md border-black/5'
             }`}>
-              <Header 
-                isDark={isDark} 
-                onThemeToggle={() => setIsDark(!isDark)}
-                onSettingsClick={settings.openDialog}
-              />
-              
+              <Header onSettingsClick={openDialog} />
+
               <div className="px-4 sm:px-6 pb-6 pt-4">
-                <UnitToggle 
-                  unitSystem={fuel.unitSystem} 
-                  onChange={fuel.setUnitSystem} 
-                  isDark={isDark} 
-                />
-                
+                <UnitToggle unitSystem={fuel.unitSystem} onChange={fuel.setUnitSystem} />
+
                 <div className="space-y-4">
                   <FuelInputGroup
                     currentFuel={fuel.currentFuel}
                     desiredFuel={fuel.desiredFuel}
                     density={fuel.density}
                     unitSystem={fuel.unitSystem}
-                    isDark={isDark}
-                    currentFocused={focus.current}
-                    desiredFocused={focus.desired}
                     onCurrentFuelChange={fuel.setCurrentFuel}
                     onDesiredFuelChange={fuel.setDesiredFuel}
-                    onCurrentFocus={() => focus.setCurrentFocus(true)}
-                    onCurrentBlur={() => focus.setCurrentFocus(false)}
-                    onDesiredFocus={() => focus.setDesiredFocus(true)}
-                    onDesiredBlur={() => focus.setDesiredFocus(false)}
-                    maxFuelLoad={settings.settings.maxFuelLoad}
-                    defaultPresetLoad={settings.settings.defaultPresetLoad}
+                    maxFuelLoad={settings.maxFuelLoad}
+                    defaultPresetLoad={settings.defaultPresetLoad}
                   />
 
                   <DensityInput
@@ -84,39 +65,41 @@ export default function App() {
                     temperature={fuel.temperature}
                     onChange={fuel.setDensity}
                     onTemperatureChange={fuel.setTemperature}
-                    isDark={isDark}
-                    isFocused={focus.density}
-                    onFocus={() => focus.setDensityFocus(true)}
-                    onBlur={() => focus.setDensityFocus(false)}
-                    defaultDensity={settings.settings.defaultDensity}
-                    defaultTemperature={settings.settings.defaultTemperature}
+                    defaultDensity={settings.defaultDensity}
+                    defaultTemperature={settings.defaultTemperature}
                     unitSystem={fuel.unitSystem}
                   />
                 </div>
               </div>
             </div>
 
-            <FuelReceipt 
+            <FuelReceipt
               currentFuel={fuel.currentFuel}
               desiredFuel={fuel.desiredFuel}
               density={fuel.density}
               temperature={fuel.temperature}
-              defaultTemperature={settings.settings.defaultTemperature}
-              densityChanged={fuel.density !== settings.settings.defaultDensity}
+              defaultTemperature={settings.defaultTemperature}
+              densityChanged={fuel.density !== settings.defaultDensity}
               unitSystem={fuel.unitSystem}
-              isDark={isDark}
             />
           </div>
         </div>
       </div>
 
-      <SettingsDialog 
-        isOpen={settings.isDialogOpen}
-        onClose={settings.closeDialog}
-        settings={settings.settings}
-        onSettingsChange={settings.updateSettings}
-        isDark={isDark}
+      <SettingsDialog
+        isOpen={isDialogOpen}
+        onClose={closeDialog}
+        settings={settings}
+        onSettingsChange={updateSettings}
       />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <FuelCalculator />
+    </ThemeProvider>
   );
 }

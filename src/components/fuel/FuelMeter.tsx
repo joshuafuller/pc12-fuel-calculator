@@ -1,53 +1,50 @@
-import React from 'react';
-import { poundsToGallons, gallonsToLiters } from '../../utils/constants';
+import { useMemo } from 'react';
+import { poundsToVolume } from '../../utils/constants';
 import { UnitSystem } from '../../types/fuel';
+import { useTheme } from '../../context/ThemeContext';
+import { buildScaleMarkers, fillPercent } from '../../utils/meterScale';
 
 interface FuelMeterProps {
   currentFuel: number;
   desiredFuel: number;
+  density: number;
   unitSystem: UnitSystem;
-  isDark: boolean;
   maxFuelLoad: number;
 }
 
-export function FuelMeter({ currentFuel, desiredFuel, unitSystem, isDark, maxFuelLoad }: FuelMeterProps) {
-  // Calculate heights as exact percentages
-  const currentHeight = (currentFuel / maxFuelLoad) * 100;
-  const desiredHeight = (desiredFuel / maxFuelLoad) * 100;
-  
-  // Generate scale markers
-  const scaleMarkers = [];
-  if (unitSystem === 'imperial') {
-    // Minor ticks at 100 lbs, major at 500 lbs
-    for (let value = 0; value <= maxFuelLoad; value += 100) {
-      const isMajor = value % 500 === 0 || value === 0 || value === maxFuelLoad;
-      scaleMarkers.push({
-        value,
-        position: (value / maxFuelLoad) * 100,
-        isMajor,
-        displayValue: isMajor ? value.toString() : ''
-      });
-    }
-  } else {
-    // Convert max fuel to liters for metric scale
-    const maxLiters = gallonsToLiters(poundsToGallons(maxFuelLoad));
-    // Minor ticks at 100L, major at 500L
-    for (let liters = 0; liters <= maxLiters; liters += 100) {
-      const isMajor = liters % 500 === 0 || liters === 0 || liters >= maxLiters;
-      const gallons = liters / 3.78541;
-      const pounds = gallons * 6.7;
-      scaleMarkers.push({
-        value: pounds,
-        position: (pounds / maxFuelLoad) * 100,
-        isMajor,
-        displayValue: isMajor ? Math.round(liters).toString() : ''
-      });
-    }
-  }
+const BUBBLE_COUNT = 15;
 
-  // Helper function to determine if a marker should be shifted down
-  const shouldShiftDown = (height: number) => height > 95;
-  
+// Levels above this sit too close to the top edge for their label to fit above the line.
+const LABEL_SHIFT_THRESHOLD = 95;
+
+export function FuelMeter({ currentFuel, desiredFuel, density, unitSystem, maxFuelLoad }: FuelMeterProps) {
+  const { isDark } = useTheme();
+  const currentHeight = fillPercent(currentFuel, maxFuelLoad);
+  const desiredHeight = fillPercent(desiredFuel, maxFuelLoad);
+
+  const scaleMarkers = useMemo(
+    () => buildScaleMarkers(maxFuelLoad, unitSystem, density),
+    [maxFuelLoad, unitSystem, density]
+  );
+
+  // Randomised once, so bubbles don't jump around every time a value changes.
+  const bubbles = useMemo(
+    () =>
+      Array.from({ length: BUBBLE_COUNT }, () => ({
+        left: Math.random() * 100,
+        bottom: Math.random() * 100,
+        delay: Math.random() * 5,
+        duration: 4 + Math.random() * 4
+      })),
+    []
+  );
+
+  const shouldShiftDown = (height: number) => height > LABEL_SHIFT_THRESHOLD;
+  const formatLevel = (pounds: number) =>
+    unitSystem === 'imperial'
+      ? `${pounds.toFixed(0)} lbs`
+      : `${poundsToVolume(pounds, density, 'metric').toFixed(0)} L`;
+
   return (
     <div className="relative group h-full">
       <div className={`w-full h-full rounded-lg relative overflow-hidden border transition-colors duration-300 ${
@@ -72,9 +69,9 @@ export function FuelMeter({ currentFuel, desiredFuel, unitSystem, isDark, maxFue
               />
               
               <div className="flex items-center">
-                {marker.displayValue && (
+                {marker.label && (
                   <div className="mr-1 text-[10px] font-medium text-white/90 select-none whitespace-nowrap">
-                    {marker.displayValue}
+                    {marker.label}
                     <span className="text-[8px] ml-0.5 text-white/70">
                       {unitSystem === 'imperial' ? 'lbs' : 'L'}
                     </span>
@@ -131,15 +128,15 @@ export function FuelMeter({ currentFuel, desiredFuel, unitSystem, isDark, maxFue
 
             {/* Animated bubbles */}
             <div className="absolute inset-0 overflow-hidden">
-              {[...Array(15)].map((_, i) => (
+              {bubbles.map((bubble, i) => (
                 <div
                   key={i}
                   className="absolute w-1 h-1 rounded-full bg-white/30 animate-bubble"
                   style={{
-                    left: `${Math.random() * 100}%`,
-                    bottom: `${Math.random() * 100}%`,
-                    animationDelay: `${Math.random() * 5}s`,
-                    animationDuration: `${4 + Math.random() * 4}s`
+                    left: `${bubble.left}%`,
+                    bottom: `${bubble.bottom}%`,
+                    animationDelay: `${bubble.delay}s`,
+                    animationDuration: `${bubble.duration}s`
                   }}
                 />
               ))}
@@ -160,9 +157,7 @@ export function FuelMeter({ currentFuel, desiredFuel, unitSystem, isDark, maxFue
             <div className="text-[11px] font-medium whitespace-nowrap
                          text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]
                          bg-black/20 px-1 py-0.5 rounded backdrop-blur-sm">
-              {unitSystem === 'imperial' 
-                ? `${currentFuel.toFixed(0)} lbs`
-                : `${gallonsToLiters(poundsToGallons(currentFuel)).toFixed(0)} L`}
+              {formatLevel(currentFuel)}
             </div>
             <div className="w-3 h-1 bg-gradient-to-r from-blue-500 to-purple-500 
                          shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
@@ -180,9 +175,7 @@ export function FuelMeter({ currentFuel, desiredFuel, unitSystem, isDark, maxFue
               <div className="text-[11px] font-medium whitespace-nowrap
                            text-amber-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]
                            bg-black/20 px-1 py-0.5 rounded backdrop-blur-sm">
-                {unitSystem === 'imperial'
-                  ? `${desiredFuel.toFixed(0)} lbs`
-                  : `${gallonsToLiters(poundsToGallons(desiredFuel)).toFixed(0)} L`}
+                {formatLevel(desiredFuel)}
               </div>
               <div className="w-3 h-1 bg-gradient-to-r from-yellow-300 to-amber-400
                          shadow-[0_0_10px_rgba(252,211,77,0.5)]" />

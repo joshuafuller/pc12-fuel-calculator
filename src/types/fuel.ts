@@ -7,9 +7,3 @@ export interface FuelState {
   temperature: number;
   unitSystem: UnitSystem;
 }
-
-export interface FocusState {
-  current: boolean;
-  desired: boolean;
-  density: boolean;
-}

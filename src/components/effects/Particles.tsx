@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface Ripple {
   x: number;
@@ -44,6 +44,9 @@ export function Particles({
   const frameRef = useRef<number>();
   const timeRef = useRef(0);
   const lastRipplePointRef = useRef<{ x: number; y: number } | undefined>();
+  // Read inside the animation loop so a new click doesn't tear down and rebuild the effect.
+  const ripplePointRef = useRef(ripplePoint);
+  ripplePointRef.current = ripplePoint;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -52,18 +55,26 @@ export function Particles({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Honour the OS "reduce motion" preference.
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+
+    // Logical (CSS pixel) size; the backing store is scaled by devicePixelRatio.
+    let width = 0;
+    let height = 0;
+
     const resizeCanvas = () => {
       const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * window.devicePixelRatio;
-      canvas.height = rect.height * window.devicePixelRatio;
+      width = rect.width;
+      height = rect.height;
+      canvas.width = width * window.devicePixelRatio;
+      canvas.height = height * window.devicePixelRatio;
       ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     };
 
     const createParticle = () => {
-      const rect = canvas.getBoundingClientRect();
       return {
-        x: Math.random() * rect.width,
-        y: Math.random() * rect.height,
+        x: Math.random() * width,
+        y: Math.random() * height,
         vx: (Math.random() - 0.5) * 0.2 * speed,
         vy: (Math.random() - 0.5) * 0.2 * speed,
         size: (Math.random() * 1.5 + 0.5) * size,
@@ -81,7 +92,11 @@ export function Particles({
       color
     });
 
-    // Initialize particles
+    resizeCanvas();
+
+    // Initialize particles (start from scratch: this effect re-runs when props change)
+    particlesRef.current = [];
+    ripplesRef.current = [];
     const particleCount = Math.floor(30 * intensity);
     for (let i = 0; i < particleCount; i++) {
       particlesRef.current.push(createParticle());
@@ -93,12 +108,13 @@ export function Particles({
       const deltaTime = timestamp - timeRef.current;
       timeRef.current = timestamp;
       
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, width, height);
 
       // Handle ripple
-      if (ripplePoint && ripplePoint !== lastRipplePointRef.current) {
-        ripplesRef.current.push(createRipple(ripplePoint.x, ripplePoint.y));
-        lastRipplePointRef.current = ripplePoint;
+      const point = ripplePointRef.current;
+      if (point && point !== lastRipplePointRef.current) {
+        ripplesRef.current.push(createRipple(point.x, point.y));
+        lastRipplePointRef.current = point;
       }
 
       // Update and draw ripples
@@ -146,10 +162,10 @@ export function Particles({
 
           // Wrap around edges with padding
           const padding = p.size * 2;
-          if (p.x < -padding) p.x = canvas.width + padding;
-          if (p.x > canvas.width + padding) p.x = -padding;
-          if (p.y < -padding) p.y = canvas.height + padding;
-          if (p.y > canvas.height + padding) p.y = -padding;
+          if (p.x < -padding) p.x = width + padding;
+          if (p.x > width + padding) p.x = -padding;
+          if (p.y < -padding) p.y = height + padding;
+          if (p.y > height + padding) p.y = -padding;
 
           // Smooth alpha transition
           p.alpha += (p.targetAlpha - p.alpha) * 0.1;
@@ -172,7 +188,6 @@ export function Particles({
       frameRef.current = requestAnimationFrame(animate);
     };
 
-    resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
     frameRef.current = requestAnimationFrame(animate);
 
@@ -182,7 +197,7 @@ export function Particles({
         cancelAnimationFrame(frameRef.current);
       }
     };
-  }, [active, color, intensity, speed, size, ripplePoint]);
+  }, [active, color, intensity, speed, size]);
 
   return (
     <canvas 

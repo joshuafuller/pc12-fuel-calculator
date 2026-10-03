@@ -1,88 +1,109 @@
-import { useState, useEffect } from 'react';
-import { FuelState } from '../types/fuel';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { FuelState, UnitSystem } from '../types/fuel';
 import { Settings } from '../types/settings';
 import { saveFuelState, loadFuelState } from '../utils/storage';
-import { adjustDensityForTemperature, fahrenheitToCelsius, celsiusToFahrenheit } from '../utils/temperature';
+import {
+  adjustDensityForTemperature,
+  fahrenheitToCelsius,
+  celsiusToFahrenheit
+} from '../utils/temperature';
 
-export function useFuelState(settings: Settings) {
-  const [state, setState] = useState<FuelState>({
+const clampFuel = (value: number, max: number) => Math.min(Math.max(0, value), max);
+
+function initialState(settings: Settings): FuelState {
+  if (settings.persistSettings) {
+    const saved = loadFuelState();
+    if (saved) {
+      return {
+        ...saved,
+        currentFuel: clampFuel(saved.currentFuel, settings.maxFuelLoad),
+        desiredFuel: clampFuel(saved.desiredFuel, settings.maxFuelLoad)
+      };
+    }
+  }
+  return {
     currentFuel: 0,
     desiredFuel: 0,
     density: settings.defaultDensity,
     temperature: settings.defaultTemperature,
     unitSystem: 'imperial'
-  });
+  };
+}
 
-  // Load saved state on mount
+export function useFuelState(settings: Settings) {
+  const { defaultDensity, maxFuelLoad, persistSettings } = settings;
+  const [state, setState] = useState<FuelState>(() => initialState(settings));
+
+  // A new default density invalidates the temperature-adjusted density; the initial
+  // render keeps whatever density was restored from storage.
+  const isFirstRender = useRef(true);
   useEffect(() => {
-    if (settings.persistSettings) {
-      const savedState = loadFuelState();
-      if (savedState) {
-        setState(savedState);
-      }
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
     }
-  }, [settings.persistSettings]);
+    setState(prev => ({
+      ...prev,
+      density: adjustDensityForTemperature(defaultDensity, prev.temperature, prev.unitSystem === 'metric')
+    }));
+  }, [defaultDensity]);
 
-  // Update density when temperature changes
+  // Lowering the maximum fuel load must not leave fuel above the new maximum.
   useEffect(() => {
-    const adjustedDensity = adjustDensityForTemperature(
-      settings.defaultDensity,
-      state.temperature,
-      state.unitSystem === 'metric'
+    setState(prev =>
+      prev.currentFuel > maxFuelLoad || prev.desiredFuel > maxFuelLoad
+        ? {
+            ...prev,
+            currentFuel: clampFuel(prev.currentFuel, maxFuelLoad),
+            desiredFuel: clampFuel(prev.desiredFuel, maxFuelLoad)
+          }
+        : prev
     );
-    setState(prev => ({ ...prev, density: adjustedDensity }));
-  }, [state.temperature, state.unitSystem, settings.defaultDensity]);
+  }, [maxFuelLoad]);
 
-  // Save state when it changes
   useEffect(() => {
-    if (settings.persistSettings) {
-      saveFuelState(state);
-    }
-  }, [state, settings.persistSettings]);
+    if (persistSettings) saveFuelState(state);
+  }, [state, persistSettings]);
 
-  // Handle unit system changes for temperature
-  const handleUnitSystemChange = (unitSystem: FuelState['unitSystem']) => {
-    setState(prev => {
-      const newTemp = unitSystem === 'metric' 
-        ? Math.round(fahrenheitToCelsius(prev.temperature))
-        : Math.round(celsiusToFahrenheit(prev.temperature));
-      
-      // Recalculate density for new unit system
-      const newDensity = adjustDensityForTemperature(
-        settings.defaultDensity,
-        newTemp,
-        unitSystem === 'metric'
-      );
+  const setCurrentFuel = useCallback(
+    (currentFuel: number) => setState(prev => ({ ...prev, currentFuel: clampFuel(currentFuel, maxFuelLoad) })),
+    [maxFuelLoad]
+  );
 
-      return { 
-        ...prev, 
-        unitSystem, 
-        temperature: newTemp,
-        density: newDensity
-      };
-    });
-  };
+  const setDesiredFuel = useCallback(
+    (desiredFuel: number) => setState(prev => ({ ...prev, desiredFuel: clampFuel(desiredFuel, maxFuelLoad) })),
+    [maxFuelLoad]
+  );
 
-  return {
-    ...state,
-    setState,
-    setCurrentFuel: (currentFuel: number) => 
-      setState(prev => ({ ...prev, currentFuel: Math.min(currentFuel, settings.maxFuelLoad) })),
-    setDesiredFuel: (desiredFuel: number) => 
-      setState(prev => ({ ...prev, desiredFuel: Math.min(desiredFuel, settings.maxFuelLoad) })),
-    setDensity: (density: number) => setState(prev => ({ ...prev, density })),
-    setTemperature: (temperature: number) => {
-      const adjustedDensity = adjustDensityForTemperature(
-        settings.defaultDensity,
+  const setDensity = useCallback((density: number) => setState(prev => ({ ...prev, density })), []);
+
+  const setTemperature = useCallback(
+    (temperature: number) =>
+      setState(prev => ({
+        ...prev,
         temperature,
-        state.unitSystem === 'metric'
-      );
-      setState(prev => ({ 
-        ...prev, 
-        temperature,
-        density: adjustedDensity
-      }));
-    },
-    setUnitSystem: handleUnitSystemChange
-  };
+        density: adjustDensityForTemperature(defaultDensity, temperature, prev.unitSystem === 'metric')
+      })),
+    [defaultDensity]
+  );
+
+  const setUnitSystem = useCallback(
+    (unitSystem: UnitSystem) =>
+      setState(prev => {
+        if (prev.unitSystem === unitSystem) return prev;
+        const temperature =
+          unitSystem === 'metric'
+            ? Math.round(fahrenheitToCelsius(prev.temperature))
+            : Math.round(celsiusToFahrenheit(prev.temperature));
+        return {
+          ...prev,
+          unitSystem,
+          temperature,
+          density: adjustDensityForTemperature(defaultDensity, temperature, unitSystem === 'metric')
+        };
+      }),
+    [defaultDensity]
+  );
+
+  return { ...state, setCurrentFuel, setDesiredFuel, setDensity, setTemperature, setUnitSystem };
 }

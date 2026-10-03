@@ -27,8 +27,8 @@ Quickly determine how much fuel to add or remove for your PC-12. Adjust for ambi
 
 ### Requirements
 
-- Node.js (v18+)
-- [Corepack](https://nodejs.org/api/corepack.html) enabled (bundled with Node 18+) to use the pinned Yarn version
+- Node.js 20.19+ (or 22.12+)
+- [Corepack](https://nodejs.org/api/corepack.html) enabled (bundled with Node) to use the pinned Yarn version
 
 ### Installation
 
@@ -64,11 +64,27 @@ Pre-check your production build locally before deploying.
 ## Project Structure
 
 - `index.html`: Entry point for the app.
-- `src/`: Core React code, hooks, and utilities.
-- `src/components/`: Modular UI components.
-- `src/utils/`: Utility functions for calculations, conversions, and storage.
-- `tailwind.config.js`: Tailwind configuration.
+- `src/App.tsx`: Page layout; wires hooks to components.
+- `src/components/`
+  - `fuel/`: Calculator pieces (meter, inputs, receipt).
+  - `ui/`: Generic UI (validated input, toggles, settings dialog).
+  - `layout/`: Header.
+  - `effects/`: Canvas particle effect.
+- `src/context/`: Theme (dark/light) context, persisted to local storage.
+- `src/hooks/`: `useFuelState` (calculator state, unit/temperature/density rules) and `useSettings`.
+- `src/utils/`: Pure functions for unit conversion, temperature/density, meter scale, and storage.
+- `tailwind.config.js`: Tailwind configuration, including the `xs` and `land` (landscape) breakpoints.
 - `vite.config.ts`: Vite and PWA setup.
+
+## Scripts
+
+```bash
+yarn dev        # dev server
+yarn build      # type-check (tsc -b) + production build
+yarn typecheck  # type-check only
+yarn lint       # ESLint
+yarn test       # Vitest (watch mode; add --run for a single pass)
+```
 
 ## Deployment to GitHub Pages
 

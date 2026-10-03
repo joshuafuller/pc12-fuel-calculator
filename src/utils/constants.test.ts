@@ -1,4 +1,4 @@
-import { poundsToGallons, gallonsToLiters, DEFAULT_FUEL_DENSITY, LITERS_PER_GALLON } from './constants';
+import { poundsToGallons, gallonsToLiters, poundsToVolume, DEFAULT_FUEL_DENSITY, LITERS_PER_GALLON } from './constants';
 
 describe('Utility Functions', () => {
   describe('poundsToGallons', () => {
@@ -24,3 +24,9 @@ describe('Utility Functions', () => {
     });
   });
 }); 
+describe('poundsToVolume', () => {
+  it('returns gallons for imperial and liters for metric', () => {
+    expect(poundsToVolume(670, 6.7, 'imperial')).toBeCloseTo(100);
+    expect(poundsToVolume(670, 6.7, 'metric')).toBeCloseTo(100 * LITERS_PER_GALLON);
+  });
+});
