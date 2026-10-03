@@ -118,15 +118,15 @@ export function StandardInput({
   const isNonStandard = standardValue !== undefined && value !== standardValue;
 
   return (
-    <div className="relative">
+    <div className="relative min-w-0 w-full">
       <label className={`block text-xs font-medium mb-1.5 ${
         isDark ? 'text-white' : 'text-gray-700'
       }`}>
-        <div className="flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0">
           {icon}
-          <span>{label}</span>
+          <span className="whitespace-nowrap">{label}</span>
           {standardValue !== undefined && (
-            <span className={`text-xs ${
+            <span className={`text-xs whitespace-nowrap ${
               isDark ? 'text-blue-300/60' : 'text-blue-600/60'
             }`}>
               (Std: {standardValue})
@@ -134,8 +134,8 @@ export function StandardInput({
           )}
         </div>
       </label>
-      <div className="relative inline-flex items-center gap-3" ref={inputRef} onClick={handleClick}>
-        <div className="relative">
+      <div className="relative flex items-center gap-3" ref={inputRef} onClick={handleClick}>
+        <div className="relative flex-1 min-w-0">
           {isFocused && (
             <>
               <div className="absolute -inset-[2px] bg-gradient-to-r from-blue-500 to-purple-500 

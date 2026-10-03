@@ -53,7 +53,7 @@ export function FuelInputGroup({
         maxFuelLoad={maxFuelLoad}
       />
       
-      <div className="flex items-start gap-2">
+      <div className="flex flex-wrap xs:flex-nowrap items-start gap-2 min-w-0">
         <FuelInput
           label="Desired Fuel Load"
           value={desiredFuel}
@@ -66,7 +66,7 @@ export function FuelInputGroup({
           onBlur={onDesiredBlur}
           maxFuelLoad={maxFuelLoad}
         />
-        <div className="mt-5">
+        <div className="xs:mt-5 flex-shrink-0">
           <PresetButton 
             onClick={() => onDesiredFuelChange(defaultPresetLoad)} 
             isDark={isDark}

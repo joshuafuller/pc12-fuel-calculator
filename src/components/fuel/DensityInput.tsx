@@ -54,8 +54,8 @@ export function DensityInput({
   };
 
   return (
-    <div className="flex items-start gap-6">
-      <div className="flex items-start gap-6">
+    <div className="flex flex-wrap items-start gap-x-3 gap-y-2 sm:gap-x-6">
+      <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-6 flex-1 min-w-0 max-w-sm">
         <StandardInput
           label="Fuel Density"
           value={value}
@@ -70,7 +70,7 @@ export function DensityInput({
           icon={<Droplet className="w-3 h-3" />}
           unit="lbs/gal"
           standardValue={adjustedDefaultDensity}
-          width="w-40"
+          width="w-full"
           showResetButton={false}
           allowEmpty={false}
         />
@@ -89,14 +89,14 @@ export function DensityInput({
           icon={<Thermometer className="w-3 h-3" />}
           unit={unitSystem === 'metric' ? '°C' : '°F'}
           standardValue={standardTemp}
-          width="w-40"
+          width="w-full"
           showResetButton={false}
           allowEmpty={false}
         />
       </div>
 
       {isNonStandard && (
-        <div className="flex items-center gap-2 mt-6">
+        <div className="flex items-center gap-2 sm:mt-6">
           <span className="text-yellow-500 text-xs whitespace-nowrap">
             Non-std
           </span>
