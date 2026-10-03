@@ -35,21 +35,15 @@ export function useFuelState(settings: Settings) {
   const { defaultDensity, maxFuelLoad, persistSettings } = settings;
   const [state, setState] = useState<FuelState>(() => initialState(settings));
 
-  // Settings changes adjust the state during render (React's pattern for deriving state
-  // from props) rather than in an effect, which would paint one stale frame first.
-  const [prevSettings, setPrevSettings] = useState({ defaultDensity, maxFuelLoad });
-  if (prevSettings.defaultDensity !== defaultDensity || prevSettings.maxFuelLoad !== maxFuelLoad) {
-    setPrevSettings({ defaultDensity, maxFuelLoad });
+  // A new default density invalidates the temperature-adjusted density. Adjusting state
+  // during render (React's pattern for deriving state from props) avoids painting one
+  // stale frame, which an effect would.
+  const [prevDefaultDensity, setPrevDefaultDensity] = useState(defaultDensity);
+  if (prevDefaultDensity !== defaultDensity) {
+    setPrevDefaultDensity(defaultDensity);
     setState(prev => ({
       ...prev,
-      // A new default density invalidates the temperature-adjusted density.
-      density:
-        prevSettings.defaultDensity !== defaultDensity
-          ? adjustDensityForTemperature(defaultDensity, prev.temperature, prev.unitSystem === 'metric')
-          : prev.density,
-      // Lowering the maximum must not leave fuel above it.
-      currentFuel: clampFuel(prev.currentFuel, maxFuelLoad),
-      desiredFuel: clampFuel(prev.desiredFuel, maxFuelLoad)
+      density: adjustDensityForTemperature(defaultDensity, prev.temperature, prev.unitSystem === 'metric')
     }));
   }
 
@@ -97,5 +91,16 @@ export function useFuelState(settings: Settings) {
     [defaultDensity]
   );
 
-  return { ...state, setCurrentFuel, setDesiredFuel, setDensity, setTemperature, setUnitSystem };
+  // Stored fuel is never rewritten when the maximum changes: while the max is being edited
+  // it passes through smaller values (2704 -> 270 -> 1500), and clamping the stored amount
+  // would lose it for good. Only what is returned is capped.
+  return {
+    ...state,
+    currentFuel: Math.min(state.currentFuel, maxFuelLoad),
+    desiredFuel: Math.min(state.desiredFuel, maxFuelLoad),
+    setCurrentFuel,     setDesiredFuel,
+    setDensity,
+    setTemperature,
+    setUnitSystem
+  };
 }

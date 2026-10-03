@@ -59,10 +59,15 @@ describe('useFuelState', () => {
     expect(result.current.currentFuel).toBe(0);
   });
 
-  it('pulls fuel down when the maximum is lowered', () => {
+  it('caps displayed fuel at a lowered maximum without losing the stored amount', () => {
     const { result, rerender } = renderHook(({ s }) => useFuelState(s), { initialProps: { s: settings } });
     act(() => result.current.setCurrentFuel(2000));
-    rerender({ s: { ...settings, maxFuelLoad: 1500 } });
-    expect(result.current.currentFuel).toBe(1500);
+
+    // Retyping the maximum passes through smaller intermediate values.
+    rerender({ s: { ...settings, maxFuelLoad: 270 } });
+    expect(result.current.currentFuel).toBe(270);
+
+    rerender({ s: { ...settings, maxFuelLoad: 2500 } });
+    expect(result.current.currentFuel).toBe(2000);
   });
 });
