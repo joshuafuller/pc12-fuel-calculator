@@ -17,13 +17,20 @@ export default function App() {
   const focus = useFocusState();
   
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${
-      isDark ? 'bg-gray-900' : 'bg-gray-100'
-    }`}>
-      <div className="max-w-3xl land:max-w-5xl mx-auto px-3 py-4 land:py-2 sm:px-4 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] pb-[max(1rem,env(safe-area-inset-bottom))]">
+    <div
+      className={`min-h-screen transition-colors duration-300 ${
+        isDark ? 'bg-gray-900' : 'bg-gray-100'
+      }`}
+      style={{
+        paddingLeft: 'env(safe-area-inset-left)',
+        paddingRight: 'env(safe-area-inset-right)',
+        paddingBottom: 'env(safe-area-inset-bottom)',
+      }}
+    >
+      <div className="max-w-3xl land:max-w-5xl mx-auto px-3 py-4 land:py-2 sm:px-4">
         <div className="flex gap-3 sm:gap-4">
           {/* Fuel Meter - Left Side */}
-          <div className="w-16 sm:w-20 flex-shrink-0 sticky top-4 land:top-2 self-start h-[calc(100vh-2rem)] h-[calc(100dvh-2rem)] land:h-[calc(100dvh-1rem)] min-h-[320px]">
+          <div className="w-12 xs:w-16 sm:w-20 flex-shrink-0 sticky top-4 land:top-2 self-start h-[calc(100vh-2rem)] h-[calc(100dvh-2rem)] land:h-[calc(100dvh-1rem)] min-h-[320px]">
             <FuelMeter 
               currentFuel={fuel.currentFuel}
               desiredFuel={fuel.desiredFuel}

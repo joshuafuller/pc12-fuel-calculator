@@ -14,8 +14,8 @@ export function Header({ isDark, onThemeToggle, onSettingsClick }: HeaderProps) 
         ? 'bg-black/60 border-white/5' 
         : 'bg-white/80 border-black/5'
     }`}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex items-center justify-between gap-1">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <div className="relative w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center">
             <div className={`absolute inset-0 blur-sm rounded-full ${
               isDark ? 'bg-blue-500/20' : 'bg-blue-500/10'
@@ -34,10 +34,10 @@ export function Header({ isDark, onThemeToggle, onSettingsClick }: HeaderProps) 
             PC-12 Fuel Calculator
           </h1>
         </div>
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-0 xs:gap-2 sm:gap-3 flex-shrink-0">
           <button
             onClick={onSettingsClick}
-            className={`p-2 sm:p-2.5 rounded-lg transition-all duration-300 relative ${
+            className={`p-1.5 xs:p-2 sm:p-2.5 rounded-lg transition-all duration-300 relative ${
               isDark 
                 ? 'text-blue-400 hover:text-blue-300' 
                 : 'text-blue-600 hover:text-blue-500'
@@ -50,7 +50,7 @@ export function Header({ isDark, onThemeToggle, onSettingsClick }: HeaderProps) 
           </button>
           <a
             href="mailto:joshuafuller@gmail.com"
-            className={`p-2 sm:p-2.5 rounded-lg transition-all duration-300 relative ${
+            className={`p-1.5 xs:p-2 sm:p-2.5 rounded-lg transition-all duration-300 relative ${
               isDark 
                 ? 'text-blue-400 hover:text-blue-300' 
                 : 'text-blue-600 hover:text-blue-500'
@@ -63,7 +63,7 @@ export function Header({ isDark, onThemeToggle, onSettingsClick }: HeaderProps) 
           </a>
           <button
             onClick={onThemeToggle}
-            className={`p-2 sm:p-2.5 rounded-lg transition-all duration-300 relative ${
+            className={`p-1.5 xs:p-2 sm:p-2.5 rounded-lg transition-all duration-300 relative ${
               isDark 
                 ? 'text-blue-400 hover:text-blue-300' 
                 : 'text-blue-600 hover:text-blue-500'

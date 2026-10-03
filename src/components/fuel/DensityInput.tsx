@@ -55,7 +55,7 @@ export function DensityInput({
 
   return (
     <div className="flex flex-wrap items-start gap-x-3 gap-y-2 sm:gap-x-6">
-      <div className="grid grid-cols-2 gap-3 sm:gap-6 flex-1 min-w-0 max-w-sm">
+      <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-6 flex-1 min-w-0 max-w-sm">
         <StandardInput
           label="Fuel Density"
           value={value}

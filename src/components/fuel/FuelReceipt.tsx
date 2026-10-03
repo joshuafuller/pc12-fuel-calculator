@@ -67,7 +67,7 @@ export function FuelReceipt({
         ? 'bg-black/40 backdrop-blur-md border-white/10 ring-1 ring-blue-500/20' 
         : 'bg-white/90 backdrop-blur-md border-black/5'
     }`}>
-      <div className={`p-3 sm:p-4 font-mono text-xs sm:text-sm leading-tight ${
+      <div className={`p-3 sm:p-4 font-mono text-[11px] xs:text-xs sm:text-sm leading-tight ${
         isDark ? 'text-white' : 'text-gray-900'
       }`}>
         <div className="max-w-[400px] mx-auto">
