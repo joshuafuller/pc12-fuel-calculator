@@ -17,6 +17,12 @@ describe('useFuelState', () => {
     });
   });
 
+  it('adjusts the initial density for a non-standard default temperature', () => {
+    const { result } = renderHook(() => useFuelState({ ...settings, defaultTemperature: 100 }));
+    expect(result.current.temperature).toBe(100);
+    expect(result.current.density).toBeCloseTo(6.7 - 41 * 0.0035, 3);
+  });
+
   it('clamps fuel to [0, max]', () => {
     const { result } = renderHook(() => useFuelState(settings));
     act(() => result.current.setCurrentFuel(99999));

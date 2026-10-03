@@ -24,7 +24,8 @@ function initialState(settings: Settings): FuelState {
   return {
     currentFuel: 0,
     desiredFuel: 0,
-    density: settings.defaultDensity,
+    // defaultTemperature is stored in °F, and the initial unit system is imperial
+    density: adjustDensityForTemperature(settings.defaultDensity, settings.defaultTemperature, false),
     temperature: settings.defaultTemperature,
     unitSystem: 'imperial'
   };
