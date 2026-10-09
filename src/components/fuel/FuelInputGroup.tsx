@@ -66,7 +66,7 @@ export function FuelInputGroup({
           onBlur={onDesiredBlur}
           maxFuelLoad={maxFuelLoad}
         />
-        <div className="xs:mt-5 flex-shrink-0">
+        <div className="xs:mt-5 shrink-0">
           <PresetButton 
             onClick={() => onDesiredFuelChange(defaultPresetLoad)} 
             isDark={isDark}

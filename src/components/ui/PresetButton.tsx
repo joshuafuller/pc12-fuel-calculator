@@ -21,7 +21,7 @@ export function PresetButton({ onClick, isDark, presetValue }: PresetButtonProps
     >
       <Sparkles className="w-3 h-3" />
       <span>{presetValue} lbs</span>
-      <div className="absolute inset-0 rounded-md blur-sm bg-gradient-to-r from-blue-500/10 to-purple-500/10 
+      <div className="absolute inset-0 rounded-md blur-xs bg-linear-to-r from-blue-500/10 to-purple-500/10 
                    opacity-0 group-hover:opacity-100 transition-opacity" />
     </button>
   );

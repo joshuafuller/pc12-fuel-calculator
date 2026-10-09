@@ -45,8 +45,8 @@ export function FuelInput({
       </label>
       <div className="relative">
         {isFocused && (
-          <div className="absolute -inset-[2px] bg-gradient-to-r from-blue-500 to-purple-500 
-                       opacity-50 blur-sm rounded-lg animate-pulse -z-10" />
+          <div className="absolute inset-[-2px] bg-linear-to-r from-blue-500 to-purple-500 
+                       opacity-50 blur-xs rounded-lg animate-pulse -z-10" />
         )}
         <input
           type="number"
@@ -55,7 +55,7 @@ export function FuelInput({
           onFocus={onFocus}
           onBlur={onBlur}
           className={`w-full px-2 py-1.5 border rounded text-sm
-                   focus:outline-none focus:ring-2 focus:ring-blue-500/50 pr-16 
+                   focus:outline-hidden focus:ring-2 focus:ring-blue-500/50 pr-16 
                    transition-all duration-300 ${
                      isDark 
                        ? 'bg-black/30 text-white placeholder-white/50' 

@@ -138,8 +138,8 @@ export function StandardInput({
         <div className="relative flex-1 min-w-0">
           {isFocused && (
             <>
-              <div className="absolute -inset-[2px] bg-gradient-to-r from-blue-500 to-purple-500 
-                           opacity-50 blur-sm rounded-lg animate-glow -z-10" />
+              <div className="absolute inset-[-2px] bg-linear-to-r from-blue-500 to-purple-500 
+                           opacity-50 blur-xs rounded-lg animate-glow -z-10" />
               <Particles 
                 active={true}
                 color={isDark ? '#60A5FA' : '#3B82F6'} 
@@ -165,7 +165,7 @@ export function StandardInput({
             }}
             step={step}
             className={`${width} px-3 py-1.5 border rounded text-sm
-                     focus:outline-none focus:ring-2 focus:ring-blue-500/50 
+                     focus:outline-hidden focus:ring-2 focus:ring-blue-500/50 
                      transition-all duration-300 ${unit ? 'pr-16' : ''} ${
                        isDark 
                          ? 'bg-black/30 border-white/20 text-white placeholder-white/50'

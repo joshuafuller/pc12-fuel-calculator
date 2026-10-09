@@ -12,7 +12,7 @@ export function UnitToggle({ unitSystem, onChange, isDark }: UnitToggleProps) {
   return (
     <div className="flex items-center gap-2 mb-3">
       <Scale className={`w-3 h-3 ${isDark ? 'text-white/60' : 'text-gray-500'}`} />
-      <div className={`rounded p-0.5 flex ${isDark ? 'bg-white/10' : 'bg-black/5'}`}>
+      <div className={`rounded-sm p-0.5 flex ${isDark ? 'bg-white/10' : 'bg-black/5'}`}>
         <button
           onClick={() => onChange('imperial')}
           className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
