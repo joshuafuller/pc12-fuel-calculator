@@ -67,7 +67,7 @@ export function FuelMeter({ currentFuel, desiredFuel, unitSystem, isDark, maxFue
                 className={`${
                   marker.isMajor 
                     ? 'w-6 h-[2px] bg-white/80' 
-                    : 'w-3 h-[1px] bg-white/30'
+                    : 'w-3 h-px bg-white/30'
                 }`} 
               />
               
@@ -84,7 +84,7 @@ export function FuelMeter({ currentFuel, desiredFuel, unitSystem, isDark, maxFue
                   className={`${
                     marker.isMajor 
                       ? 'w-6 h-[2px] bg-white/80' 
-                      : 'w-3 h-[1px] bg-white/30'
+                      : 'w-3 h-px bg-white/30'
                   }`} 
                 />
               </div>
@@ -97,11 +97,11 @@ export function FuelMeter({ currentFuel, desiredFuel, unitSystem, isDark, maxFue
           {/* Desired fuel level indicator */}
           {desiredFuel > currentFuel && (
             <div 
-              className="absolute bottom-0 left-0 right-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 
+              className="absolute bottom-0 left-0 right-0 bg-linear-to-r from-blue-500/20 to-purple-500/20 
                        transition-all duration-700 ease-out"
               style={{ height: `${desiredHeight}%` }}
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-b from-white/10 to-transparent" />
             </div>
           )}
 
@@ -111,20 +111,20 @@ export function FuelMeter({ currentFuel, desiredFuel, unitSystem, isDark, maxFue
             style={{ height: `${currentHeight}%` }}
           >
             {/* Base gradient */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-90" />
+            <div className="absolute inset-0 bg-linear-to-r from-blue-500 to-purple-500 opacity-90" />
             
             {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-b from-white/20 to-transparent" />
             
             {/* Liquid surface effect */}
             <div className="absolute inset-x-0 top-0">
               <div className="h-2 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-b from-white/40 to-transparent" />
                 <div className="absolute inset-0 animate-wave-slow opacity-70">
-                  <div className="w-[200%] h-full bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+                  <div className="w-[200%] h-full bg-linear-to-r from-transparent via-white/30 to-transparent" />
                 </div>
                 <div className="absolute inset-0 animate-wave-fast opacity-50 delay-150">
-                  <div className="w-[200%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                  <div className="w-[200%] h-full bg-linear-to-r from-transparent via-white/20 to-transparent" />
                 </div>
               </div>
             </div>
@@ -159,12 +159,12 @@ export function FuelMeter({ currentFuel, desiredFuel, unitSystem, isDark, maxFue
           >
             <div className="text-[11px] font-medium whitespace-nowrap
                          text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]
-                         bg-black/20 px-1 py-0.5 rounded backdrop-blur-sm">
+                         bg-black/20 px-1 py-0.5 rounded backdrop-blur-xs">
               {unitSystem === 'imperial' 
                 ? `${currentFuel.toFixed(0)} lbs`
                 : `${gallonsToLiters(poundsToGallons(currentFuel)).toFixed(0)} L`}
             </div>
-            <div className="w-3 h-1 bg-gradient-to-r from-blue-500 to-purple-500 
+            <div className="w-3 h-1 bg-linear-to-r from-blue-500 to-purple-500 
                          shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
           </div>
 
@@ -179,12 +179,12 @@ export function FuelMeter({ currentFuel, desiredFuel, unitSystem, isDark, maxFue
             >
               <div className="text-[11px] font-medium whitespace-nowrap
                            text-amber-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]
-                           bg-black/20 px-1 py-0.5 rounded backdrop-blur-sm">
+                           bg-black/20 px-1 py-0.5 rounded backdrop-blur-xs">
                 {unitSystem === 'imperial'
                   ? `${desiredFuel.toFixed(0)} lbs`
                   : `${gallonsToLiters(poundsToGallons(desiredFuel)).toFixed(0)} L`}
               </div>
-              <div className="w-3 h-1 bg-gradient-to-r from-yellow-300 to-amber-400
+              <div className="w-3 h-1 bg-linear-to-r from-yellow-300 to-amber-400
                          shadow-[0_0_10px_rgba(252,211,77,0.5)]" />
             </div>
           )}

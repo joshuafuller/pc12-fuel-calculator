@@ -36,7 +36,7 @@ export function SettingsDialog({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
       <div className={`relative w-full max-w-lg rounded-xl shadow-2xl border transition-colors duration-300 ${
         isDark 
           ? 'bg-black/90 border-white/10 ring-1 ring-blue-500/20' 
@@ -81,7 +81,7 @@ export function SettingsDialog({
                   value={settings.maxFuelLoad}
                   onChange={(e) => handleChange('maxFuelLoad', Math.max(0, Number(e.target.value)))}
                   className={`flex-1 px-3 py-2 border rounded-lg text-sm
-                           focus:outline-none focus:ring-2 focus:ring-blue-500/50 
+                           focus:outline-hidden focus:ring-2 focus:ring-blue-500/50 
                            transition-colors ${
                              isDark 
                                ? 'bg-black/30 border-white/20 text-white' 
@@ -117,7 +117,7 @@ export function SettingsDialog({
                   onChange={(e) => handleChange('defaultDensity', Math.max(5, Math.min(8, Number(e.target.value))))}
                   step="0.1"
                   className={`flex-1 px-3 py-2 border rounded-lg text-sm
-                           focus:outline-none focus:ring-2 focus:ring-blue-500/50 
+                           focus:outline-hidden focus:ring-2 focus:ring-blue-500/50 
                            transition-colors ${
                              isDark 
                                ? 'bg-black/30 border-white/20 text-white' 
@@ -152,7 +152,7 @@ export function SettingsDialog({
                   value={settings.defaultTemperature}
                   onChange={(e) => handleChange('defaultTemperature', Math.max(-22, Math.min(122, Number(e.target.value))))}
                   className={`flex-1 px-3 py-2 border rounded-lg text-sm
-                           focus:outline-none focus:ring-2 focus:ring-blue-500/50 
+                           focus:outline-hidden focus:ring-2 focus:ring-blue-500/50 
                            transition-colors ${
                              isDark 
                                ? 'bg-black/30 border-white/20 text-white' 
@@ -186,7 +186,7 @@ export function SettingsDialog({
                 value={settings.defaultPresetLoad}
                 onChange={(e) => handleChange('defaultPresetLoad', Math.max(0, Number(e.target.value)))}
                 className={`w-full px-3 py-2 border rounded-lg text-sm
-                         focus:outline-none focus:ring-2 focus:ring-blue-500/50 
+                         focus:outline-hidden focus:ring-2 focus:ring-blue-500/50 
                          transition-colors ${
                            isDark 
                              ? 'bg-black/30 border-white/20 text-white' 

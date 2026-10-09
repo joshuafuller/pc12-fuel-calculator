@@ -17,7 +17,7 @@ export function Header({ isDark, onThemeToggle, onSettingsClick }: HeaderProps) 
       <div className="flex items-center justify-between gap-1">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <div className="relative w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center">
-            <div className={`absolute inset-0 blur-sm rounded-full ${
+            <div className={`absolute inset-0 blur-xs rounded-full ${
               isDark ? 'bg-blue-500/20' : 'bg-blue-500/10'
             }`} />
             <Fuel className={`w-4 h-4 sm:w-5 sm:h-5 relative animate-pulse-subtle ${
@@ -26,7 +26,7 @@ export function Header({ isDark, onThemeToggle, onSettingsClick }: HeaderProps) 
                 : 'text-blue-600'
             }`} />
           </div>
-          <h1 className={`text-base sm:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r ${
+          <h1 className={`text-base sm:text-xl font-bold bg-clip-text text-transparent bg-linear-to-r ${
             isDark 
               ? 'from-blue-400 to-purple-400' 
               : 'from-blue-600 to-purple-600'
@@ -34,7 +34,7 @@ export function Header({ isDark, onThemeToggle, onSettingsClick }: HeaderProps) 
             PC-12 Fuel Calculator
           </h1>
         </div>
-        <div className="flex items-center gap-0 xs:gap-2 sm:gap-3 flex-shrink-0">
+        <div className="flex items-center gap-0 xs:gap-2 sm:gap-3 shrink-0">
           <button
             onClick={onSettingsClick}
             className={`p-1.5 xs:p-2 sm:p-2.5 rounded-lg transition-all duration-300 relative ${
@@ -44,7 +44,7 @@ export function Header({ isDark, onThemeToggle, onSettingsClick }: HeaderProps) 
             }`}
             title="Settings"
           >
-            <div className="absolute inset-0 rounded-lg blur-sm bg-gradient-to-r from-blue-500/10 to-purple-500/10 
+            <div className="absolute inset-0 rounded-lg blur-xs bg-linear-to-r from-blue-500/10 to-purple-500/10 
                          opacity-0 hover:opacity-100 transition-opacity" />
             <Settings className="w-4 h-4 sm:w-5 sm:h-5 relative z-10" />
           </button>
@@ -57,7 +57,7 @@ export function Header({ isDark, onThemeToggle, onSettingsClick }: HeaderProps) 
             }`}
             title="Send feedback"
           >
-            <div className="absolute inset-0 rounded-lg blur-sm bg-gradient-to-r from-blue-500/10 to-purple-500/10 
+            <div className="absolute inset-0 rounded-lg blur-xs bg-linear-to-r from-blue-500/10 to-purple-500/10 
                          opacity-0 hover:opacity-100 transition-opacity" />
             <Mail className="w-4 h-4 sm:w-5 sm:h-5 relative z-10" />
           </a>
@@ -69,7 +69,7 @@ export function Header({ isDark, onThemeToggle, onSettingsClick }: HeaderProps) 
                 : 'text-blue-600 hover:text-blue-500'
             }`}
           >
-            <div className="absolute inset-0 rounded-lg blur-sm bg-gradient-to-r from-blue-500/10 to-purple-500/10 
+            <div className="absolute inset-0 rounded-lg blur-xs bg-linear-to-r from-blue-500/10 to-purple-500/10 
                          opacity-0 hover:opacity-100 transition-opacity" />
             {isDark ? (
               <Sun className="w-4 h-4 sm:w-5 sm:h-5 relative z-10" />
